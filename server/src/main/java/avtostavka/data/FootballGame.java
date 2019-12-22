@@ -1,24 +1,90 @@
 package avtostavka.data;
 
-public class BasketballGame extends Game {
+public class FootballGame extends Game {
 
-    private float gameInitTotal;
+    private boolean isSuitable = false;
 
-    private float gameTotal;
+    private boolean isRestricted = false;
 
-    private float sendTotal;
+    private boolean isSent = false;
 
-    private boolean isSuitable12Strategy = false;
+    private boolean isWritten = false;
 
-    private boolean isRestricted12Strategy = false;
+    private int[] scoreArray = new int[2];
 
-    private boolean isSentStr12 = false;
+    private float win1;
 
-    private boolean isWrittenStr12 = false;
+    private float win2;
 
-    private boolean isLong;
+    public int liveTicker;
 
-    private int[][] scoreArray = new int[4][3];
+    public int checkTicker;
+
+    private int sendSum;
+
+    public int getSendSum() {
+        return sendSum;
+    }
+
+    public void setSendSum(int sendSum) {
+        this.sendSum = sendSum;
+    }
+
+    public float getWin1() {
+        return win1;
+    }
+
+    public void setWin1(float win1) {
+        this.win1 = win1;
+    }
+
+    public float getWin2() {
+        return win2;
+    }
+
+    public void setWin2(float win2) {
+        this.win2 = win2;
+    }
+
+    public boolean isSuitable() {
+        return isSuitable;
+    }
+
+    public void setSuitable(boolean suitable) {
+        isSuitable = suitable;
+    }
+
+    public boolean isRestricted() {
+        return isRestricted;
+    }
+
+    public void setRestricted(boolean restricted) {
+        isRestricted = restricted;
+    }
+
+    public boolean isSent() {
+        return isSent;
+    }
+
+    public void setSent(boolean sent) {
+        isSent = sent;
+    }
+
+    public boolean isWritten() {
+        return isWritten;
+    }
+
+    public void setWritten(boolean written) {
+        isWritten = written;
+    }
+
+    public int[] getScoreArray() {
+        return scoreArray;
+    }
+
+    public void setScoreArray(int[] scoreArray) {
+        this.scoreArray = scoreArray;
+    }
 
     @Override
     public String getReference() {
@@ -128,77 +194,5 @@ public class BasketballGame extends Game {
     @Override
     public void setLive(boolean live) {
         super.setLive(live);
-    }
-
-    public float getGameInitTotal() {
-        return this.gameInitTotal;
-    }
-
-    public void setGameInitTotal(float gameInitTotal) {
-        this.gameInitTotal = gameInitTotal;
-    }
-
-    public float getGameTotal() {
-        return this.gameTotal;
-    }
-
-    public void setGameTotal(float gameTotal) {
-        this.gameTotal = gameTotal;
-    }
-
-    public float getSendTotal() {
-        return this.sendTotal;
-    }
-
-    public void setSendTotal(float sendTotal) {
-        this.sendTotal = sendTotal;
-    }
-
-    public boolean isSuitable12Strategy() {
-        return isSuitable12Strategy;
-    }
-
-    public void setSuitable12Strategy(boolean suitable12Strategy) {
-        isSuitable12Strategy = suitable12Strategy;
-    }
-
-    public boolean isSentStr12() {
-        return isSentStr12;
-    }
-
-    public void setSentStr12(boolean sentStr12) {
-        isSentStr12 = sentStr12;
-    }
-
-    public boolean isRestricted12Strategy() {
-        return isRestricted12Strategy;
-    }
-
-    public void setRestricted12Strategy(boolean restricted12Strategy) {
-        isRestricted12Strategy = restricted12Strategy;
-    }
-
-    public boolean isLong() {
-        return this.isLong;
-    }
-
-    public void setLong(boolean aLong) {
-        this.isLong = aLong;
-    }
-
-    public int[][] getScoreArray() {
-        return this.scoreArray;
-    }
-
-    public void setScoreArray(int[][] scoreArray) {
-        this.scoreArray = scoreArray;
-    }
-
-    public boolean isWrittenStr12() {
-        return isWrittenStr12;
-    }
-
-    public void setWrittenStr12(boolean writtenStr12) {
-        isWrittenStr12 = writtenStr12;
     }
 }
