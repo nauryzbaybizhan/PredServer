@@ -1,15 +1,25 @@
 package avtostavka.bookmakers;
 
-import avtostavka.Config;
+import avtostavka.App;
+import avtostavka.BookmakerDataParser;
+import avtostavka.strategies.basketball.BasketballStrategies;
 import com.google.gson.Gson;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BookParser<T> {
+
+    protected ChromeDriver driver;
+    protected WebElement webElement;
+    protected BookmakerDataParser charCheck = new BookmakerDataParser();
+    protected BasketballStrategies basketballStrategies = new BasketballStrategies();
+    protected String basketball = "Баскетбол";
+    protected String n = ";";
 
     public static String fonBet = "https://www.fonbet.ru/";
 
@@ -17,24 +27,24 @@ public abstract class BookParser<T> {
 
     public void init(String ref) {}
 
-    public void close() {}
+    public void close() {driver.quit();}
 
-    public void parseLine(ConcurrentHashMap<String, T> retBasketball, Config config, int i) {}
+    public void parseLine(int i) {}
 
-    public void parseMainPage(ConcurrentHashMap<String, T> retBasketball, Config config, int i) {}
+    public void parseMainPage(int i) {}
 
-    public void checkMatches(ConcurrentHashMap<String, T> retHandball) {}
+    public void checkMatches() {}
 
     public void writeStat(T value) {}
 
     public void updateCounter() {
-//        Gson gson = new Gson();
-//        String newConfig = gson.toJson(Main.config);
-//        try (OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream("config.json", false),
-//                StandardCharsets.UTF_8)) {
-//            osw.write(newConfig);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        Gson gson = new Gson();
+        String newConfig = gson.toJson(App.config);
+        try (OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream("config.json", false),
+                StandardCharsets.UTF_8)) {
+            osw.write(newConfig);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

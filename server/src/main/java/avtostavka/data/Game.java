@@ -2,35 +2,35 @@ package avtostavka.data;
 
 public abstract class Game {
 
-    protected String reference;
+    private String reference;
 
-    protected String team1;
+    private String team1;
 
-    protected String team2;
+    private String team2;
 
-    protected String teams;
+    private String teams;
 
-    protected String league;
+    private String league;
 
-    protected String score;
+    private String score;
 
     public int ticker = 0;
 
-    protected String strategy;
+    private String strategy;
 
-    protected String time = "default";
+    private String time = "default";
 
-    protected float floatTime = -1;
+    private float floatTime = -1;
 
-    protected boolean isTracked;
+    private boolean isTracked;
 
-    protected boolean isLive;
+    private boolean isLive;
 
     public String getReference() {
         return reference;
     }
 
-    public void setReference(String reference) {
+    protected void setReference(String reference) {
         this.reference = reference;
     }
 
@@ -38,7 +38,7 @@ public abstract class Game {
         return team1;
     }
 
-    public void setTeam1(String team1) {
+    protected void setTeam1(String team1) {
         this.team1 = team1;
     }
 
@@ -46,7 +46,7 @@ public abstract class Game {
         return team2;
     }
 
-    public void setTeam2(String team2) {
+    protected void setTeam2(String team2) {
         this.team2 = team2;
     }
 
@@ -54,7 +54,7 @@ public abstract class Game {
         return teams;
     }
 
-    public void setTeams(String teams) {
+    protected void setTeams(String teams) {
         this.teams = teams;
     }
 
@@ -62,7 +62,7 @@ public abstract class Game {
         return league;
     }
 
-    public void setLeague(String league) {
+    protected void setLeague(String league) {
         this.league = league;
     }
 
@@ -70,7 +70,7 @@ public abstract class Game {
         return score;
     }
 
-    public void setScore(String score) {
+    protected void setScore(String score) {
         this.score = score;
     }
 
@@ -78,7 +78,7 @@ public abstract class Game {
         return strategy;
     }
 
-    public void setStrategy(String strategy) {
+    protected void setStrategy(String strategy) {
         this.strategy = strategy;
     }
 
@@ -86,7 +86,7 @@ public abstract class Game {
         return time;
     }
 
-    public void setTime(String time) {
+    protected void setTime(String time) {
         this.time = time;
     }
 
@@ -94,7 +94,7 @@ public abstract class Game {
         return floatTime;
     }
 
-    public void setFloatTime(float floatTime) {
+    protected void setFloatTime(float floatTime) {
         this.floatTime = floatTime;
     }
 
@@ -102,7 +102,7 @@ public abstract class Game {
         return isTracked;
     }
 
-    public void setTracked(boolean tracked) {
+    protected void setTracked(boolean tracked) {
         isTracked = tracked;
     }
 
@@ -110,7 +110,7 @@ public abstract class Game {
         return isLive;
     }
 
-    public void setLive(boolean live) {
+    protected void setLive(boolean live) {
         isLive = live;
     }
 }
