@@ -34,7 +34,7 @@ public class FonBetBasketball extends BookParser<BasketballGame> {
             try {
                 ChromeOptions options = Options.getInstance().getOptions(false);
                 driver = new ChromeDriver(options);
-                driver.get(fonBet+ref);
+                driver.get(fonBet + ref);
                 try {
                     webElement = (new WebDriverWait(driver, 10))
                             .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"cookie_policy_popup\"]/div/div/div[2]/a")));
@@ -68,7 +68,7 @@ public class FonBetBasketball extends BookParser<BasketballGame> {
     @Override
     public void parseLine(int i) {
         try {
-            if (i==1 || i == 2500) {
+            if (i == 1 || i == 2500) {
                 driver.get(fonBet + line);
             }
             webElement = (new WebDriverWait(driver, 7))
@@ -84,7 +84,7 @@ public class FonBetBasketball extends BookParser<BasketballGame> {
                 Elements content = document.select("div.table__flex-container > table");
                 for (Element element : content.select("tbody")
                 ) {
-                    for (Element tr: element.select("tr")
+                    for (Element tr : element.select("tr")
                     ) {
                         Element check;
                         String noClass, yesClass = "table__col _pos_first _indent_1";
@@ -100,7 +100,7 @@ public class FonBetBasketball extends BookParser<BasketballGame> {
                             Element link;
                             try {
                                 link = tr.select("td.table__col._size_long > div.table__match-title > a").first();
-                                key = link.attr("href").replace("bets","live");
+                                key = link.attr("href").replace("bets", "live");
                             } catch (NullPointerException e) {
                                 //e.printStackTrace();
                                 continue;
@@ -115,7 +115,7 @@ public class FonBetBasketball extends BookParser<BasketballGame> {
                             }
                             try {
                                 link = tr.select("td.table__col._size_long > div.table__match-title > a").first();
-                                sportData.setReference(link.attr("href").replace("bets","live"));
+                                sportData.setReference(link.attr("href").replace("bets", "live"));
                             } catch (NullPointerException e) {
                                 //e.printStackTrace();
                                 continue;
@@ -149,7 +149,7 @@ public class FonBetBasketball extends BookParser<BasketballGame> {
     @Override
     public void parseMainPage(int i) {
         try {
-            if (i==1 || i == 2500) {
+            if (i == 1 || i == 2500) {
                 driver.get(fonBet + live);
             }
             webElement = (new WebDriverWait(driver, 7))
@@ -166,7 +166,7 @@ public class FonBetBasketball extends BookParser<BasketballGame> {
                 ArrayList<String> oldMatches = new ArrayList<>();
                 for (Element element : content.select("tbody")
                 ) {
-                    for (Element tr: element.select("tr")
+                    for (Element tr : element.select("tr")
                     ) {
                         Element check;
                         String noClass, yesClass = "table__col _pos_first _indent_1";
@@ -207,15 +207,17 @@ public class FonBetBasketball extends BookParser<BasketballGame> {
                             String time = tr.select("td.table__col._size_long > div.table__timescore > div.table__time > span.table__time-text").text().trim();
                             if (time.isEmpty()) {
                                 sportData.setTime("0:0");
-                            }  else {
+                            } else {
                                 sportData.setTime(time);
                             }
                             sportData.setFloatTime(charCheck.parseTime(sportData.getTime()));
                             sportData.setLive(true);
                             String score;
                             try {
-                                if (sportData.getFloatTime() <=10) score = "(" + tr.select("td.table__col._size_long > div.table__timescore > div.table__score > span.table__score-normal").text().replace(":","-").trim() + ")";
-                                else score = tr.select("td.table__col._size_long > div.table__timescore > div.table__score > span.table__score-more").text().trim();
+                                if (sportData.getFloatTime() <= 10)
+                                    score = "(" + tr.select("td.table__col._size_long > div.table__timescore > div.table__score > span.table__score-normal").text().replace(":", "-").trim() + ")";
+                                else
+                                    score = tr.select("td.table__col._size_long > div.table__timescore > div.table__score > span.table__score-more").text().trim();
                             } catch (NoSuchElementException e) {
                                 //e.printStackTrace();
                                 score = "";
@@ -238,7 +240,7 @@ public class FonBetBasketball extends BookParser<BasketballGame> {
                         }
                     }
                 }
-                for (String ref: oldMatches
+                for (String ref : oldMatches
                 ) {
                     retBasketball.remove(ref);
                 }
@@ -262,18 +264,10 @@ public class FonBetBasketball extends BookParser<BasketballGame> {
             if (!value.isLive()) continue;
             try {
                 value.ticker++;
-                int [][] allScore = value.getScoreArray();
+                int[][] allScore = value.getScoreArray();
                 value.setScoreArray(charCheck.parseFullScore(value.getScore()));
                 if (allScore[0][0] == -1) continue;
-                if (value.isSuitable12Strategy()) {
-                    System.out.println(value.getLeague());
-                    System.out.println(value.getTeams());
-                    System.out.println(value.getScore());
-                    System.out.println(value.getGameInitTotal());
-                    System.out.println(value.getGameTotal());
-                    System.out.println(value.getTime());
-                    basketballStrategies.checkStrategy(value);
-                }
+                App.getEventBus().post(value);
             } catch (StaleElementReferenceException e) {
                 e.printStackTrace();
                 driver.get(fonBet + value.getReference());

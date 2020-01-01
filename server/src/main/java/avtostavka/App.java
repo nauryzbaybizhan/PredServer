@@ -8,12 +8,9 @@ import com.google.common.eventbus.AsyncEventBus;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 import java.util.concurrent.Executors;
 
 public class App {
@@ -22,12 +19,9 @@ public class App {
 
     public static void main(String[] args) throws IOException {
         try {
-            InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream("config.json"), StandardCharsets.UTF_8);
-            Scanner sc = new Scanner(inputStreamReader);
-            String someJson = sc.nextLine();
             Gson gson = new Gson();
-            JsonReader reader = new JsonReader(new StringReader(someJson));
-            reader.setLenient(true);
+            FileReader fileReader = new FileReader("config.json", StandardCharsets.UTF_8);
+            JsonReader reader = new JsonReader(fileReader);
             config = gson.fromJson(reader, Config.class);
             reader.close();
         } catch (IOException e) {

@@ -2,7 +2,6 @@ package avtostavka.bookmakers;
 
 import avtostavka.App;
 import avtostavka.BookmakerDataParser;
-import avtostavka.strategies.basketball.BasketballStrategies;
 import com.google.gson.Gson;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -17,7 +16,6 @@ public abstract class BookParser<T> {
     protected ChromeDriver driver;
     protected WebElement webElement;
     protected BookmakerDataParser charCheck = new BookmakerDataParser();
-    protected BasketballStrategies basketballStrategies = new BasketballStrategies();
     protected String basketball = "Баскетбол";
     protected String n = ";";
 
@@ -25,17 +23,24 @@ public abstract class BookParser<T> {
 
     public static String xStavka = "https://1xstavka.ru/";
 
-    public void init(String ref) {}
+    public void init(String ref) {
+    }
 
-    public void close() {driver.quit();}
+    public void close() {
+        driver.quit();
+    }
 
-    public void parseLine(int i) {}
+    public void parseLine(int i) {
+    }
 
-    public void parseMainPage(int i) {}
+    public void parseMainPage(int i) {
+    }
 
-    public void checkMatches() {}
+    public void checkMatches() {
+    }
 
-    public void writeStat(T value) {}
+    public void writeStat(T value) {
+    }
 
     public void updateCounter() {
         Gson gson = new Gson();

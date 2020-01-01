@@ -17,7 +17,7 @@ public class Filter {
         list.add("Филиппины");
         list.add("NCAA");
         list.add("Китай");
-        for (String league: list
+        for (String league : list
         ) {
             if (currentLeague.contains(league) || currentLeague.equalsIgnoreCase(league)) {
                 return false;
