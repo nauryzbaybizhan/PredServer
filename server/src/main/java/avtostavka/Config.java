@@ -15,9 +15,15 @@ public class Config {
 
     public boolean footballWhiteList;
 
+    public ArrayList<String> tennisBlackList = new ArrayList<>();
+
+    public boolean tennisWhiteList;
+
     public int basketballCount;
 
     public int footballCount;
 
     public int handballCount;
+
+    public int tennisCount;
 }

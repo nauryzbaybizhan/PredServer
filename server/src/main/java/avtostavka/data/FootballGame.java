@@ -12,9 +12,13 @@ public class FootballGame extends Game {
 
     private int[] scoreArray = new int[2];
 
-    private float win1;
+    private float lineWin1;
 
-    private float win2;
+    private float lineWin2;
+
+    private float gameWin1;
+
+    private float gameWin2;
 
     public int liveTicker;
 
@@ -30,20 +34,36 @@ public class FootballGame extends Game {
         this.sendSum = sendSum;
     }
 
-    public float getWin1() {
-        return win1;
+    public float getLineWin1() {
+        return lineWin1;
     }
 
-    public void setWin1(float win1) {
-        this.win1 = win1;
+    public void setLineWin1(float lineWin1) {
+        this.lineWin1 = lineWin1;
     }
 
-    public float getWin2() {
-        return win2;
+    public float getLineWin2() {
+        return lineWin2;
     }
 
-    public void setWin2(float win2) {
-        this.win2 = win2;
+    public void setLineWin2(float lineWin2) {
+        this.lineWin2 = lineWin2;
+    }
+
+    public float getGameWin1() {
+        return gameWin1;
+    }
+
+    public void setGameWin1(float gameWin1) {
+        this.gameWin1 = gameWin1;
+    }
+
+    public float getGameWin2() {
+        return gameWin2;
+    }
+
+    public void setGameWin2(float gameWin2) {
+        this.gameWin2 = gameWin2;
     }
 
     public boolean isSuitable() {

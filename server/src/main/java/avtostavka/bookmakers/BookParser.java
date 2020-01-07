@@ -17,6 +17,8 @@ public abstract class BookParser<T> {
     protected WebElement webElement;
     protected BookmakerDataParser charCheck = new BookmakerDataParser();
     protected String basketball = "Баскетбол";
+    protected String football = "Футбол";
+    protected String tennis = "Теннис";
     protected String n = ";";
 
     public static String fonBet = "https://www.fonbet.ru/";

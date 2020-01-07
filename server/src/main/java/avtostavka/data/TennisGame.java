@@ -1,55 +1,79 @@
 package avtostavka.data;
 
-public class BasketballGame extends Game {
+public class TennisGame extends Game {
 
-    private float gameInitTotal;
+    private float lineWin1;
 
-    private float gameTotal;
+    private float lineWin2;
 
-    private float sendTotal;
+    private float gameWin1;
 
-    private int[][] scoreArray = new int[4][3];
+    private float gameWin2;
 
-    private boolean isSentStr12;
+    public int checkTicker = 0;
 
-    public float getGameInitTotal() {
-        return this.gameInitTotal;
+    public int liveTicker = 0;
+
+    private boolean isSent = false;
+
+    private boolean isWritten = false;
+
+    private int[][] scoreArray = new int[5][3];
+
+    public float getLineWin1() {
+        return lineWin1;
     }
 
-    public void setGameInitTotal(float gameInitTotal) {
-        this.gameInitTotal = gameInitTotal;
+    public void setLineWin1(float lineWin1) {
+        this.lineWin1 = lineWin1;
     }
 
-    public float getGameTotal() {
-        return this.gameTotal;
+    public float getLineWin2() {
+        return lineWin2;
     }
 
-    public void setGameTotal(float gameTotal) {
-        this.gameTotal = gameTotal;
+    public void setLineWin2(float lineWin2) {
+        this.lineWin2 = lineWin2;
+    }
+
+    public float getGameWin1() {
+        return gameWin1;
+    }
+
+    public void setGameWin1(float gameWin1) {
+        this.gameWin1 = gameWin1;
+    }
+
+    public float getGameWin2() {
+        return gameWin2;
+    }
+
+    public void setGameWin2(float gameWin2) {
+        this.gameWin2 = gameWin2;
+    }
+
+    public boolean isSent() {
+        return isSent;
+    }
+
+    public void setSent(boolean sent) {
+        isSent = sent;
+    }
+
+    public boolean isWritten() {
+        return isWritten;
+    }
+
+    public void setWritten(boolean written) {
+        isWritten = written;
     }
 
     public int[][] getScoreArray() {
-        return this.scoreArray;
+        return scoreArray;
     }
 
     public void setScoreArray(int[][] scoreArray) {
         this.scoreArray = scoreArray;
-    }
-
-    public float getSendTotal() {
-        return sendTotal;
-    }
-
-    public void setSendTotal(float sendTotal) {
-        this.sendTotal = sendTotal;
-    }
-
-    public boolean isSentStr12() {
-        return isSentStr12;
-    }
-
-    public void setSentStr12(boolean sentStr12) {
-        isSentStr12 = sentStr12;
     }
 
     @Override
@@ -161,5 +185,4 @@ public class BasketballGame extends Game {
     public void setLive(boolean live) {
         super.setLive(live);
     }
-
 }
