@@ -8,17 +8,17 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class FonBetBasketball extends BookParser<BasketballGame> {
 
@@ -261,7 +261,184 @@ public class FonBetBasketball extends BookParser<BasketballGame> {
             value.ticker++;
             int[][] allScore = value.getScoreArray();
             if (allScore[0][0] == -1) continue;
+            if (Filter.getInstance().contains(value.getLeague(), App.sevenBasketConfig.whiteList)) {
+                value.setSuitableFoulStrategy(true);
+                value.setSuitableTwentyMinStrategy(true);
+                value.setSuitableStrategy3(true);
+            }
+            if (!Filter.getInstance().contains(value.getLeague(), App.config.basketballBlackList)) {
+                value.setSuitableStr12(true);
+            }
             App.getEventBus().post(value);
+            if (value.isSuitableFoulStrategy()) {
+                if ((value.getFloatTime() > 6.05 && value.getFloatTime() <11.0) ||
+                        (value.getFloatTime() > 16.05 && value.getFloatTime() < 21.0 && value.getFloatTime() != 20.0) ||
+                        (value.getFloatTime() > 26.05 && value.getFloatTime() <31.0)) continue;
+                if (value.getScoreArray()[0][0] == -1) continue;
+                driver.get(fonBet + value.getReference());
+                try {
+                    webElement = (new WebDriverWait(driver, 3))
+                            .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.ev-scoreboard__head--oZ14Y._sport_3--3NEdk > span.ev-scoreboard__head-caption--2PsZ1")));
+                } catch (TimeoutException e) {
+                    continue;
+                }
+                if (value.getScoreArray()[0][0] < 3) {
+                    if (!clickIfQuarter4(value.getScoreArray())) continue;
+                }
+                webElement = (new WebDriverWait(driver, 3))
+                        .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.line-filter-layout__menu--3YfDq > div > div > div.line-header__menu--GWd-F")));
+                webElement = driver.findElement(By.cssSelector("#main"));
+                String html = webElement.getAttribute("innerHTML");
+                Document document = Jsoup.parse(html);
+                try {
+                    value.koef = document.select("div.ev-factors__col--uCmqD._type_factor--oqccY._type_bet--3ZujX._col_total-vo--39ham").text().trim();
+                    value.koefM = document.select("div.ev-factors__col--uCmqD._type_factor--oqccY._type_bet--3ZujX._col_total-vu--1P5Ld").text().trim();
+                } catch (Exception e) {
+                    value.koef = "";
+                    value.koefM = "";
+                }
+                if (value.quarter < 4) {
+                    try {
+                        value.quarterTotal = Float.parseFloat(document.select("div.ev-factors__row--3LmVL._type_body--HtZvu > div.ev-factors__col--uCmqD._type_factor--oqccY._type_param--1HrQl._col_total-p--2ryqH").text().trim());
+                    } catch (Exception e) {
+                        value.quarterTotal = 0;
+                    }
+                }
+                try {
+                    if (value.getFloatTime() < 36.05) this.getFouls(value, document);
+                } catch (ElementClickInterceptedException e) {
+                    e.printStackTrace();
+                    driver.quit();
+                    try {
+                        init(fonBet + live);
+                        Thread.sleep(3000);
+                        continue;
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                App.getEventBus().post(value);
+            }
+        }
+    }
+
+
+    public boolean clickIfQuarter4(int[][] allScore) {
+        String currentQuarterSelector = "section > div.event-view__inner--2Eg5p > div.ev-tabs--3u3Yz > span:nth-child(2)";
+        try {
+            webElement = (new WebDriverWait(driver, 4))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(currentQuarterSelector)));
+            webElement = driver.findElement(By.cssSelector(currentQuarterSelector));
+            JavascriptExecutor executor = (JavascriptExecutor) driver;
+            executor.executeScript("var elem=arguments[0]; setTimeout(function() {elem.click();}, 100)", webElement);
+            String set = driver.findElement(By.cssSelector(currentQuarterSelector)).getText().trim();
+            switch (allScore[0][0]) {
+                case 1: {
+                    return set.contains("2");
+                }
+                case 2: {
+                    return set.contains("3");
+                }
+                case 3: {
+                    return set.contains("4");
+                }
+            }
+        } catch (org.openqa.selenium.NoSuchElementException | ElementClickInterceptedException | TimeoutException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    private void getFouls(BasketballGame value, Document document) throws ElementClickInterceptedException {
+        try {
+            String toSelect = "div.ev-scoreboard__head--oZ14Y._sport_3--3NEdk >div.ev-scoreboard__channels--1w5Sa";
+            List<Element> divTag = document.select(toSelect+"> div");
+            List<Element> aTag = document.select(toSelect+"> a");
+            int div = divTag.size();
+            int a = aTag.size();           String matchCenter = "центр";
+            String checkTitle;
+            boolean isPresents = false;
+            int iter=0;
+            for (Element el: document.select(toSelect+"> div")
+            ) {
+                iter++;
+                try {
+                    checkTitle = el.attr("title");
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                if (checkTitle.contains(matchCenter)) {
+                    isPresents = true;
+                    break;
+                }
+            }
+            if (isPresents && value.isSuitableFoulStrategy()) {
+                String select = toSelect;
+                if (div == 1) {
+                    select = toSelect+"> div";
+                }
+                if (div == 2 && a==1 && iter ==1) {
+                    select = toSelect+"> div:nth-child(2)";
+                }
+                if (div == 2 && a==1 && iter ==2) {
+                    select = toSelect+"> div:nth-child(3)";
+                }
+                if (div ==2 && a==2 && iter ==1) {
+                    select = toSelect+"> div:nth-child(3)";
+                }
+                if (div ==2 && a==2 && iter ==2) {
+                    select = toSelect+"> div:nth-child(4)";
+                }
+                long wait = 400;
+                webElement = driver.findElement(By.cssSelector(select));
+                JavascriptExecutor executor = (JavascriptExecutor) driver;
+                executor.executeScript("var elem=arguments[0]; setTimeout(function() {elem.click();}, 100)", webElement);
+                driver.manage().timeouts().implicitlyWait(wait, TimeUnit.MILLISECONDS);
+                try {
+                    webElement = (new WebDriverWait(driver, 5))
+                            .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#coupons__inner > div:nth-child(1)")));
+                } catch (Exception e) {
+                    driver.get(fonBet + value.getReference());
+                    e.printStackTrace();
+                }
+                String id = "mc-event_";
+                id += charCheck.parseRef(value.getReference()).trim();
+                try {
+                    driver.switchTo().frame(id);
+                    webElement = (new WebDriverWait(driver, 5))
+                            .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#field-bottom-block > div")));
+                    webElement = driver.findElement(By.cssSelector("#field-bottom-block > div"));
+                    String html2 = webElement.getAttribute("innerHTML");
+                    Document document2 = Jsoup.parse(html2);
+                    String one = "1", two = "2", three = "3", four = "4";
+                    String checkWord = document2.select("div:nth-child(3) > div.fouls-stats__item__text").text().trim();
+                    if (checkWord.contains(one)) {
+                        value.quarter = 1;
+                    }
+                    if (checkWord.contains(two)) {
+                        value.quarter = 2;
+                    }
+                    if (checkWord.contains(three)) {
+                        value.quarter = 3;
+                    }
+                    if (checkWord.contains(four)) {
+                        value.quarter = 4;
+                    }
+                    value.fouls[0] = Integer.parseInt(document2.select("div:nth-child(3) > div:nth-child(1)").text().trim());
+                    value.fouls[1] = Integer.parseInt(document2.select("div:nth-child(3) > div:nth-child(3)").text().trim());
+                    webElement = driver.findElement(By.cssSelector("#big-header > div.flex-center-between.position-relative > div.flex-center-start.interaction-elements > div:nth-child(3)"));
+                    executor = (JavascriptExecutor) driver;
+                    executor.executeScript("var elem=arguments[0]; setTimeout(function() {elem.click();}, 100)", webElement);
+                } catch (WebDriverException e) {
+                    driver.get(fonBet + value.getReference());
+                    e.printStackTrace();
+                }
+                driver.switchTo().defaultContent();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -19,6 +19,7 @@ public abstract class BookParser<T> {
     protected String basketball = "Баскетбол";
     protected String football = "Футбол";
     protected String tennis = "Теннис";
+    protected String volleyball = "Волейбол";
     protected String n = ";";
 
     public static String fonBet = "https://www.fonbet.ru/";

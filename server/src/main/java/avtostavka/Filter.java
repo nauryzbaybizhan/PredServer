@@ -12,17 +12,13 @@ public class Filter {
     private Filter() {
     }
 
-    public boolean isAllowed(String currentLeague, ArrayList<String> list) {
-        list.add("NBA");
-        list.add("Филиппины");
-        list.add("NCAA");
-        list.add("Китай");
+    public boolean contains(String currentLeague, ArrayList<String> list) {
         for (String league : list
         ) {
             if (currentLeague.contains(league) || currentLeague.equalsIgnoreCase(league)) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }

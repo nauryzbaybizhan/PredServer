@@ -8,6 +8,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -234,23 +236,85 @@ public class FonBetTennis extends BookParser<TennisGame> {
         for (TennisGame value : retTennis.values()) {
             if (value.isLive()) liveCounter++;
         }
-        System.out.println("Match count: " + retTennis.size());
-        System.out.println("Live count: " + liveCounter);
+        System.out.println("Match count tennis: " + retTennis.size());
+        System.out.println("Live count tennis: " + liveCounter);
         if (retTennis.size() == 0) return;
         for (TennisGame value : retTennis.values()) {
             if (!value.isLive()) continue;
-            value.checkTicker++;
-            if (value.checkTicker > value.liveTicker + 20) {
-                System.out.println("deleted");
-                writeStat(value);
-                oldMatches.add(value.getReference());
+            try {
+                value.checkTicker++;
+                if (value.checkTicker > value.liveTicker + 20) {
+                    System.out.println("deleted");
+                    writeStat(value);
+                    oldMatches.add(value.getReference());
+                }
+                if ((value.getScoreArray()[0][1] == 6  && value.getScoreArray()[0][2] == 0) || (value.getScoreArray()[0][1] == 0  && value.getScoreArray()[0][2] == 6)) {
+                    driver.get(fonBet + value.getReference());
+                    try {
+                        webElement = (new WebDriverWait(driver, 3))
+                                .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.ev-scoreboard__head--oZ14Y._sport_9--2Owzw > span.ev-scoreboard__head-caption--2PsZ1")));
+                    } catch (TimeoutException e) {
+                        continue;
+                    }
+                    clickIfQuarter4(value.getScoreArray());
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    webElement = (new WebDriverWait(driver, 3))
+                            .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.line-filter-layout__menu--3YfDq > div > div > div.line-header__menu--GWd-F")));
+                    webElement = driver.findElement(By.cssSelector("#main"));
+                    String html = webElement.getAttribute("innerHTML");
+                    Document document = Jsoup.parse(html);
+                    try {
+                        value.quarterTotalBKoef = Float.parseFloat(document.select("div.ev-factors__col--uCmqD._type_factor--oqccY._type_bet--3ZujX._col_total-vo--39ham").text().trim());
+                    } catch (Exception e) {
+                        value.quarterTotalBKoef = 0;
+                    }
+                    try {
+                        value.quarterTotal = Float.parseFloat(document.select("div.ev-factors__row--3LmVL._type_body--HtZvu > div.ev-factors__col--uCmqD._type_factor--oqccY._type_param--1HrQl._col_total-p--2ryqH").text().trim());
+                    } catch (Exception e) {
+                        value.quarterTotal = 0;
+                    }
+                    App.getEventBus().post(value);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                driver.get(fonBet + value.getReference());
             }
-            App.getEventBus().post(value);
         }
         for (String ref: oldMatches
         ) {
             retTennis.remove(ref);
         }
+    }
+
+    public boolean clickIfQuarter4(int[][] allScore) {
+        String currentQuarterSelector = "section > div.event-view__inner--2Eg5p > div.ev-tabs--3u3Yz > span:nth-child(2)";
+        try {
+            webElement = (new WebDriverWait(driver, 4))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(currentQuarterSelector)));
+            webElement = driver.findElement(By.cssSelector(currentQuarterSelector));
+            JavascriptExecutor executor = (JavascriptExecutor) driver;
+            executor.executeScript("var elem=arguments[0]; setTimeout(function() {elem.click();}, 100)", webElement);
+            String set = driver.findElement(By.cssSelector(currentQuarterSelector)).getText().trim();
+            switch (allScore[0][0]) {
+                case 1: {
+                    return set.contains("2");
+                }
+                case 2: {
+                    return set.contains("3");
+                }
+                case 3: {
+                    return set.contains("4");
+                }
+            }
+        } catch (org.openqa.selenium.NoSuchElementException | ElementClickInterceptedException | TimeoutException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     @Override

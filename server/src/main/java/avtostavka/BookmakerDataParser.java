@@ -1,5 +1,7 @@
 package avtostavka;
 
+import avtostavka.data.VolleyballGame;
+
 public class BookmakerDataParser {
 
     public int countChar(String str, char c) {
@@ -27,6 +29,25 @@ public class BookmakerDataParser {
             return false;
         else
             return s.charAt(0) == search || containsChar(s.substring(1), search);
+    }
+
+    public void parseTeam(VolleyballGame value) {
+        String longTire = "—";
+        int ind = value.getTeams().indexOf(longTire);
+        value.setTeam1(value.getTeams().substring(0,ind).trim());
+        value.setTeam2(value.getTeams().substring(ind+1).trim());
+    }
+
+
+    public void parseSetScore(VolleyballGame value) {
+        try {
+            int ind = value.getSetScore().indexOf(":");
+            value.setSetScore1(Integer.valueOf(value.getSetScore().substring(0,ind).trim()));
+            value.setSetScore2(Integer.valueOf(value.getSetScore().substring(ind+1).trim()));
+        } catch (IndexOutOfBoundsException e) {
+            value.setSetScore1(0);
+            value.setSetScore2(0);
+        }
     }
 
     public int[] parseScore(String score) {

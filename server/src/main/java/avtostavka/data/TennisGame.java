@@ -20,6 +20,10 @@ public class TennisGame extends Game {
 
     private int[][] scoreArray = new int[5][3];
 
+    public float quarterTotal;
+
+    public float quarterTotalBKoef;
+
     public float getLineWin1() {
         return lineWin1;
     }
