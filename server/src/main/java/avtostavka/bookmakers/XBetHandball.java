@@ -103,7 +103,7 @@ public class XBetHandball extends BookParser<HandballGame> {
                             }
                             try {
                                 link = match.select("div.c-events__item.c-events__item_game > a").first();
-                                sportData.setLineRef(link.attr("href"));
+                                sportData.lineRef = link.attr("href");
                             } catch (NullPointerException e) {
                                 e.printStackTrace();
                                 continue;
@@ -115,11 +115,11 @@ public class XBetHandball extends BookParser<HandballGame> {
                                 continue;
                                 //e.printStackTrace();
                             }
-                            if (initTotal > 0) sportData.setGameInitTotal(initTotal);
-                            sportData.setTeam1(match.select("div.c-events__item.c-events__item_game > a > span > span:nth-child(1)").text().trim());
-                            sportData.setTeam2(match.select("div.c-events__item.c-events__item_game > a > span > span:nth-child(2)").text().trim());
-                            sportData.setTeams(sportData.getTeam1() + " - " + sportData.getTeam2());
-                            sportData.setLeague(currLeague);
+                            if (initTotal > 0) sportData.gameInitTotal = initTotal;
+                            sportData.team1 = match.select("div.c-events__item.c-events__item_game > a > span > span:nth-child(1)").text().trim();
+                            sportData.team2 = match.select("div.c-events__item.c-events__item_game > a > span > span:nth-child(2)").text().trim();
+                            sportData.teams = sportData.team1 + " - " + sportData.team2;
+                            sportData.league = currLeague;
 //                            try {
 //                                driver.get(xStavka + sportData.lineRef);
 //                                webElement = (new WebDriverWait(driver, 7))
@@ -132,8 +132,8 @@ public class XBetHandball extends BookParser<HandballGame> {
 //                            } catch (Exception e) {
 //                                continue;
 //                            }
-                            sportData.setTracked(true);
-                            retHandball.put(sportData.getReference(), sportData);
+                            sportData.isTracked = true;
+                            retHandball.put(sportData.reference, sportData);
                         }
                     }
                 } catch (NullPointerException e) {
@@ -196,7 +196,7 @@ public class XBetHandball extends BookParser<HandballGame> {
                             }
                             try {
                                 link = match.select("div > div.c-events-scoreboard > div:nth-child(1) > a").first();
-                                sportData.setReference(link.attr("href"));
+                                sportData.reference = link.attr("href");
                             } catch (NullPointerException e) {
                                 e.printStackTrace();
                                 continue;
@@ -208,30 +208,30 @@ public class XBetHandball extends BookParser<HandballGame> {
                                 total = 0;
                             }
                             try {
-                                sportData.setTime(match.select("div > div.c-events-scoreboard > div:nth-child(2) > div.c-events-scoreboard__subitem > div.c-events__time > span:nth-child(1)").text().trim());
+                                sportData.time  = match.select("div > div.c-events-scoreboard > div:nth-child(2) > div.c-events-scoreboard__subitem > div.c-events__time > span:nth-child(1)").text().trim();
                             } catch (Exception e) {
-                                sportData.setTime("60:0");
+                                sportData.time  = "60:0";
                             }
-                            sportData.setFloatTime(charCheck.parseTime(sportData.getTime()));
+                            sportData.floatTime= charCheck.parseTime(sportData.time);
                             String score1 = match.select("div > div.c-events-scoreboard > div:nth-child(1) > div > div:nth-child(1) > span.c-events-scoreboard__cell.c-events-scoreboard__cell--all").text().trim();
                             String score2 = match.select("div > div.c-events-scoreboard > div:nth-child(1) > div > div:nth-child(2) > span.c-events-scoreboard__cell.c-events-scoreboard__cell--all").text().trim();
-                            sportData.setScore(score1 + "-" + score2);
-                            sportData.setScoreArray(charCheck.parseScore(sportData.getScore()));
+                            sportData.score = score1 + "-" + score2;
+                            sportData.scoreArray =charCheck.parseScore(sportData.score);
                             if (Float.parseFloat(score1) == 0 && Float.parseFloat(score2) == 0 && total > 0) {
-                                sportData.setTracked(true);
-                                sportData.setGameInitTotal(total);
+                                sportData.isTracked = true;
+                                sportData.gameInitTotal = total;
                             }
-                            if (total > 0) sportData.setGameTotal(total);
-                            sportData.setTeam1(match.select("div > div.c-events-scoreboard > div:nth-child(1) > a > span > div:nth-child(1)").text().trim());
-                            sportData.setTeam2(match.select("div > div.c-events-scoreboard > div:nth-child(1) > a > span > div:nth-child(2)").text().trim());
-                            sportData.setTeams(sportData.getTeam1() + " - " + sportData.getTeam2());
-                            sportData.setLeague(currLeague);
-                            sportData.setLive(true);
-                            if (sportData.getFloatTime() == 60.0 && sportData.isTracked()) {
+                            if (total > 0) sportData.gameTotal = total;
+                            sportData.team1 = match.select("div > div.c-events-scoreboard > div:nth-child(1) > a > span > div:nth-child(1)").text().trim();
+                            sportData.team2 = match.select("div > div.c-events-scoreboard > div:nth-child(1) > a > span > div:nth-child(2)").text().trim();
+                            sportData.teams = sportData.team1 + " - " + sportData.team2;
+                            sportData.league = currLeague;
+                            sportData.isLive = true;
+                            if (sportData.floatTime == 60.0 && sportData.isTracked) {
                                 writeStat(sportData);
-                                oldMatches.add(sportData.getReference());
+                                oldMatches.add(sportData.reference);
                             }
-                            retHandball.put(sportData.getReference(), sportData);
+                            retHandball.put(sportData.reference, sportData);
                         }
                     }
                 } catch (NullPointerException e) {
@@ -251,13 +251,13 @@ public class XBetHandball extends BookParser<HandballGame> {
     public void checkMatches(ConcurrentHashMap<String, HandballGame> retHandball) {
         liveCounter = 0;
         for (HandballGame value : retHandball.values()) {
-            if (value.isLive()) liveCounter++;
+            if (value.isLive) liveCounter++;
         }
         System.out.println("Match count: " + retHandball.size());
         System.out.println("Live count: " + liveCounter);
         if (retHandball.size() == 0) return;
         for (HandballGame value : retHandball.values()) {
-            if (!value.isLive()) continue;
+            if (!value.isLive) continue;
             App.getEventBus().post(value);
         }
     }
@@ -267,23 +267,23 @@ public class XBetHandball extends BookParser<HandballGame> {
         try {
             int result;
             String text;
-            int [] scoreArray = value.getScoreArray();
-            if (value.isSentStr1() && !value.isWrittenStr1()) {
-                value.setWrittenStr1(true);
-                if (scoreArray[1] + scoreArray[2] > value.getSendTotal()) {
+            int [] scoreArray = value.scoreArray;
+            if (value.isSentStr1 && !value.isWrittenStr1) {
+                value.isWrittenStr1 = true;
+                if (scoreArray[1] + scoreArray[2] > value.sendTotal) {
                     result = 1;
                 } else result = -1;
-                text = value.getLeague() + n + value.getTeams() + n + value.getStrategy() + n + value.getScore() + n + value.getSendTotal() + n
-                        + value.getGameInitTotal() + n + result + System.lineSeparator();
+                text = value.league + n + value.teams + n + value.strategy + n + value.score + n + value.sendTotal + n
+                        + value.gameInitTotal + n + result + System.lineSeparator();
                 this.getFile(text);
             }
-            if (value.isSentStr2() && !value.isWrittenStr2()) {
-                value.setWrittenStr2(true);
-                if (scoreArray[1] + scoreArray[2] < value.getSendTotal()) {
+            if (value.isSentStr2 && !value.isWrittenStr2) {
+                value.isWrittenStr2 = true;
+                if (scoreArray[1] + scoreArray[2] < value.sendTotal) {
                     result = 1;
                 } else result = -1;
-                text = value.getLeague() + n + value.getTeams() + n + value.getStrategy() + n + value.getScore() + n + value.getSendTotal() + n
-                        + value.getGameInitTotal() + n + result + System.lineSeparator();
+                text = value.league + n + value.teams + n + value.strategy + n + value.score + n + value.sendTotal + n
+                        + value.gameInitTotal + n + result + System.lineSeparator();
                 this.getFile(text);
             }
         } catch (IOException| NumberFormatException | NullPointerException e) {

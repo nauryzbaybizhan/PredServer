@@ -21,7 +21,7 @@ public class Options {
         chromeOptions.addArguments("--disable-notifications");
         chromeOptions.addArguments("start-maximized");
         chromeOptions.addArguments("--lang=ru");
-        System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:/Users/Bizhan/soft/chromedriver.exe");
         HashMap<String, Object> images = new HashMap<String, Object>();
         images.put("images", 2);
         HashMap<String, Object> prefs = new HashMap<String, Object>();

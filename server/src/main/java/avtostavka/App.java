@@ -1,5 +1,6 @@
 package avtostavka;
 
+import avtostavka.Threads.*;
 import avtostavka.communication.Rabbit;
 import avtostavka.communication.Telegram;
 import avtostavka.strategies.basketball.FoulStrategy;
@@ -11,8 +12,7 @@ import com.google.common.eventbus.AsyncEventBus;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Executors;
 
@@ -21,20 +21,20 @@ public class App {
     public static Config config;
     public static SevenBasketConfig sevenBasketConfig;
 
-    public static void main(String[] args) throws IOException {
-        try {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        try (BufferedReader bf = new BufferedReader(new InputStreamReader(new FileInputStream("config.json"), StandardCharsets.UTF_8));
+             BufferedReader bf2 = new BufferedReader(new InputStreamReader(new FileInputStream("whiteList.json"), StandardCharsets.UTF_8))) {
             Gson gson = new Gson();
 
-            FileReader fileReader = new FileReader("config.json", StandardCharsets.UTF_8);
-            JsonReader reader = new JsonReader(fileReader);
+            JsonReader reader = new JsonReader(bf);
             config = gson.fromJson(reader, Config.class);
 
-            FileReader fileReader2 = new FileReader("whiteList.json", StandardCharsets.UTF_8);
-            JsonReader reader2 = new JsonReader(fileReader2);
+            JsonReader reader2 = new JsonReader(bf2);
             sevenBasketConfig = gson.fromJson(reader2, SevenBasketConfig.class);
 
             reader.close();
-        } catch (IOException e) {
+            reader2.close();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.in.read();
         }
@@ -43,6 +43,12 @@ public class App {
         for (Object receiver : receivers) {
             eventBus.register(receiver);
         }
+        new FonBetLineThread().parseLine();
+        Thread.sleep(4000);
+        new FonBetBasketballThread().startFonBetWork();
+        new FonBetFootballThread().startFonBetWork();
+        new FonBetTennisThread().startFonBetWork();
+        new FonBetVolleyballThread().startFonBetWork();
     }
 
     private static AsyncEventBus eventBus = new AsyncEventBus(Executors.newFixedThreadPool(15));

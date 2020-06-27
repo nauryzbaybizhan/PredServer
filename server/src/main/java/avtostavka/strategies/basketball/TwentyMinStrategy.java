@@ -11,8 +11,8 @@ public class TwentyMinStrategy {
 
     @Subscribe
     public void ProcessGame(BasketballGame value) {
-        if (value.isSuitableTwentyMinStrategy()) {
-            float raznica = value.getGameTotal() - value.getGameInitTotal();
+        if (value.isSuitableTwentyMinStrategy) {
+            float raznica = value.gameTotal - value.gameInitTotal;
             String mess ="";
             if (raznica >= 20 && raznica < 25) {
                 mess = "Тотал меньше до 25";
@@ -26,14 +26,14 @@ public class TwentyMinStrategy {
             if (raznica <= -25) {
                 mess = "Тотал больше, разница больше 25";
             }
-            if (!value.isSentTwentyMinStrategy() && mess.length() >1) {
-                value.setSentTwentyMinStrategy(true);
+            if (!value.isSentTwentyMinStrategy && mess.length() >1) {
+                value.isSentTwentyMinStrategy = true;
                 AsyncEventBus eventBus = App.getEventBus();
-                Bet bet = new Bet(value.getTeams(), getClass().getName(), value.getReference(), "Лига: " + value.getLeague() + System.lineSeparator() +
-                        "Команды: " + value.getTeams() + System.lineSeparator() + "Время прошло: " + value.getTime() + System.lineSeparator() + mess + System.lineSeparator()
-                        + "Счет: " + value.getScore() + System.lineSeparator() +
-                        "Начальный тотал: " + value.getGameInitTotal() + System.lineSeparator() + "Тотал на игру: " + value.getGameTotal() + " (" + value.koef + ")" + System.lineSeparator() +
-                        FonBetBasketball.fonBet + value.getReference());
+                Bet bet = new Bet(value.teams, getClass().getName(), value.reference, "Лига: " + value.league + System.lineSeparator() +
+                        "Команды: " + value.teams + System.lineSeparator() + "Время прошло: " + value.time + System.lineSeparator() + mess + System.lineSeparator()
+                        + "Счет: " + value.score + System.lineSeparator() +
+                        "Начальный тотал: " + value.gameInitTotal + System.lineSeparator() + "Тотал на игру: " + value.gameTotal + " (" + value.koef + ")" + System.lineSeparator() +
+                        FonBetBasketball.fonBet + value.reference);
                 eventBus.post(bet);
             }
         }

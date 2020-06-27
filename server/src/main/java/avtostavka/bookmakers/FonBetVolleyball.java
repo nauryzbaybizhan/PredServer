@@ -115,15 +115,15 @@ public class FonBetVolleyball extends BookParser<VolleyballGame> {
                             }
                             try {
                                 link = tr.select("td.table__col._size_long > div.table__match-title > a").first();
-                                sportData.setReference(link.attr("href"));
+                                sportData.reference = link.attr("href");
                             } catch (NullPointerException e) {
                                 e.printStackTrace();
                                 continue;
                             }
-                            sportData.setLeague(element.select("tr.table__row._type_segment._sport_9 > th.table__col._type_head._size_long > div > h2").text().trim());
-                            sportData.setTeams(tr.select("td.table__col._size_long > div.table__match-title._indent_1 > a").text().trim());
+                            sportData.league = element.select("tr.table__row._type_segment._sport_9 > th.table__col._type_head._size_long > div > h2").text().trim();
+                            sportData.teams = tr.select("td.table__col._size_long > div.table__match-title._indent_1 > a").text().trim();
                             charCheck.parseTeam(sportData);
-                            sportData.setLive(true);
+                            sportData.isLive = true;
                             String setScore, fullScore;
                             try {
                                 setScore = tr.select("td.table__col._size_long > div.table__timescore > div.table__score > span.table__score-normal").text().trim();
@@ -131,16 +131,16 @@ public class FonBetVolleyball extends BookParser<VolleyballGame> {
                             } catch (Exception e) {
                                 continue;
                             }
-                            sportData.setSetScore(setScore);
+                            sportData.setScore = setScore;
                             charCheck.parseSetScore(sportData);
-                            sportData.setFullScore(fullScore);
+                            sportData.fullScore = fullScore;
                             sportData.scoreArray = charCheck.parseFullScore(fullScore);
                             if (sportData.scoreArray [0][0] == -1) continue;
                             if (sportData.scoreArray [0][0] > 1) continue;
-                            retVolleyball.put(sportData.getReference(), sportData);
+                            retVolleyball.put(sportData.reference, sportData);
                             if (sportData.scoreArray [0][0] == 2) {
                                 writeStat(sportData);
-                                oldMatches.add(sportData.getReference());
+                                oldMatches.add(sportData.reference);
                             }
                         }
                     }
@@ -166,14 +166,14 @@ public class FonBetVolleyball extends BookParser<VolleyballGame> {
                 value.ticker++;
                 if (value.scoreArray[0][0] == -1) continue;
                 if (value.scoreArray[0][0] == 1 && value.scoreArray[0][1] + value.scoreArray[0][2] > 46.5) {
-                    driver.get(fonBet + value.getReference());
+                    driver.get(fonBet + value.reference);
                     try {
                         webElement = (new WebDriverWait(driver, 3))
                                 .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.ev-scoreboard__head--oZ14Y._sport_9--2Owzw > span.ev-scoreboard__head-caption--2PsZ1")));
                     } catch (TimeoutException e) {
                         continue;
                     }
-                    clickIfQuarter4(value.scoreArray);
+                    super.clickCurrQuarter();
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
@@ -184,41 +184,14 @@ public class FonBetVolleyball extends BookParser<VolleyballGame> {
                     webElement = driver.findElement(By.cssSelector("#main"));
                     String html = webElement.getAttribute("innerHTML");
                     Document document = Jsoup.parse(html);
-                    value.setTotalQuarter2(Float.parseFloat(document.select("div.event-view__factors-wrap--_ORLN > div:nth-child(1) > div.ev-factors__row--3LmVL._type_body--HtZvu > div.ev-factors__col--uCmqD._type_factor--oqccY._type_param--1HrQl._col_total-p--2ryqH").text().trim()));
-                    value.setTotalMKoefQuarter2(Float.parseFloat(document.select("div.event-view__factors-wrap--_ORLN > div:nth-child(1) > div.ev-factors__row--3LmVL._type_body--HtZvu > div.ev-factors__col--uCmqD._type_factor--oqccY._type_bet--3ZujX._col_total-vu--1P5Ld").text().trim()));
+                    value.totalQuarter2 =Float.parseFloat(document.select("div.event-view__factors-wrap--_ORLN > div:nth-child(1) > div.ev-factors__row--3LmVL._type_body--HtZvu > div.ev-factors__col--uCmqD._type_factor--oqccY._type_param--1HrQl._col_total-p--2ryqH").text().trim());
+                    value.totalMKoefQuarter2 = Float.parseFloat(document.select("div.event-view__factors-wrap--_ORLN > div:nth-child(1) > div.ev-factors__row--3LmVL._type_body--HtZvu > div.ev-factors__col--uCmqD._type_factor--oqccY._type_bet--3ZujX._col_total-vu--1P5Ld").text().trim());
                     App.getEventBus().post(value);
                 }
             } catch (StaleElementReferenceException e) {
                 e.printStackTrace();
-                driver.get(fonBet + value.getReference());
+                driver.get(fonBet + value.reference);
             }
         }
-    }
-
-    public boolean clickIfQuarter4(int[][] allScore) {
-        String currentQuarterSelector = "section > div.event-view__inner--2Eg5p > div.ev-tabs--3u3Yz > span:nth-child(2)";
-        try {
-            webElement = (new WebDriverWait(driver, 4))
-                    .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(currentQuarterSelector)));
-            webElement = driver.findElement(By.cssSelector(currentQuarterSelector));
-            JavascriptExecutor executor = (JavascriptExecutor) driver;
-            executor.executeScript("var elem=arguments[0]; setTimeout(function() {elem.click();}, 100)", webElement);
-            String set = driver.findElement(By.cssSelector(currentQuarterSelector)).getText().trim();
-            switch (allScore[0][0]) {
-                case 1: {
-                    return set.contains("2");
-                }
-                case 2: {
-                    return set.contains("3");
-                }
-                case 3: {
-                    return set.contains("4");
-                }
-            }
-        } catch (org.openqa.selenium.NoSuchElementException | ElementClickInterceptedException | TimeoutException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
     }
 }

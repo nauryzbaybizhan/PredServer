@@ -3,8 +3,10 @@ package avtostavka.bookmakers;
 import avtostavka.App;
 import avtostavka.BookmakerDataParser;
 import com.google.gson.Gson;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,7 +24,7 @@ public abstract class BookParser<T> {
     protected String volleyball = "Волейбол";
     protected String n = ";";
 
-    public static String fonBet = "https://www.fonbet.ru/";
+    public static String fonBet = "https://www.fonbet.ru";
 
     public static String xStavka = "https://1xstavka.ru/";
 
@@ -54,5 +56,27 @@ public abstract class BookParser<T> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean clickCurrQuarter() {
+        String currentQuarterSelector = "section > div.event-view__inner--2Eg5p > div.ev-tabs--3u3Yz > span:nth-child(2)";
+        int i =0;
+        boolean clicked;
+        do {
+            i++;
+            if (i == 20) return false;
+            try {
+                webElement = (new WebDriverWait(driver, 2))
+                        .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(currentQuarterSelector)));
+                webElement = driver.findElement(By.cssSelector(currentQuarterSelector));
+                JavascriptExecutor executor = (JavascriptExecutor) driver;
+                executor.executeScript("var elem=arguments[0]; setTimeout(function() {elem.click();}, 100)", webElement);
+                clicked = true;
+            } catch (org.openqa.selenium.NoSuchElementException | ElementClickInterceptedException | TimeoutException e) {
+                e.printStackTrace();
+                clicked = false;
+            }
+        } while (!clicked);
+        return true;
     }
 }
