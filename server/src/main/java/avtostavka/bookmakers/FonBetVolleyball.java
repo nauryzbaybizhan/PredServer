@@ -3,6 +3,7 @@ package avtostavka.bookmakers;
 import avtostavka.App;
 import avtostavka.BookmakerDataParser;
 import avtostavka.Options;
+import avtostavka.Threads.FonBetVolleyballThread;
 import avtostavka.data.VolleyballGame;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FonBetVolleyball extends BookParser<VolleyballGame> {
 
-    public static String live = "#!/live/volleyball", line = "#!/bets/volleyball";
     public static int liveCounter;
 
     public static ConcurrentHashMap<String, VolleyballGame> retVolleyball = new ConcurrentHashMap<>();
@@ -67,7 +67,7 @@ public class FonBetVolleyball extends BookParser<VolleyballGame> {
     public void parseMainPage(int i) {
         try {
             if (i==1 || i == 2500) {
-                driver.get(fonBet + live);
+                driver.get(fonBet + FonBetVolleyballThread.live);
             }
             webElement = (new WebDriverWait(driver, 7))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.line-filter-layout__content--q-JdM > section")));
@@ -152,7 +152,7 @@ public class FonBetVolleyball extends BookParser<VolleyballGame> {
             }
         } catch (NoSuchElementException | TimeoutException e) {
             e.printStackTrace();
-            driver.get(fonBet + live);
+            driver.get(fonBet + FonBetVolleyballThread.live);
         }
     }
 

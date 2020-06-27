@@ -35,7 +35,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class FonBetFootball extends BookParser<FootballGame> {
 
-    public static String live = "/live/football", line = "/bets/football";
     public static int liveCounter;
 
     public static ConcurrentHashMap<String, FootballGame> retFootball= new ConcurrentHashMap<>();

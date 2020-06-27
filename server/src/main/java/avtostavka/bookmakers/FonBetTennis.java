@@ -22,7 +22,6 @@ import java.util.NoSuchElementException;
 
 public class FonBetTennis extends BookParser<TennisGame> {
 
-    public static String live = "#!/live/tennis", line = "#!/bets/tennis";
     public static int liveCounter;
 
     @Override

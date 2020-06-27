@@ -1,6 +1,9 @@
 package avtostavka.bookmakers;
 
-import avtostavka.*;
+import avtostavka.App;
+import avtostavka.BookmakerDataParser;
+import avtostavka.Data;
+import avtostavka.Options;
 import avtostavka.Threads.FonBetBasketballThread;
 import avtostavka.data.BasketballGame;
 import org.jsoup.Jsoup;
@@ -16,12 +19,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class FonBetBasketball extends BookParser<BasketballGame> {
 
-    public static String live = "#!/live/basketball", line = "#!/bets/basketball";
     public static int liveCounter;
 
     @Override

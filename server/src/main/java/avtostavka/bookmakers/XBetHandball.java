@@ -2,6 +2,7 @@ package avtostavka.bookmakers;
 
 import avtostavka.App;
 import avtostavka.Options;
+import avtostavka.Threads.XBetHandballThread;
 import avtostavka.data.HandballGame;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,7 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class XBetHandball extends BookParser<HandballGame> {
 
-    public static String live = "live/Handball/", line = "line/Handball/";
     public static int liveCounter = 0;
     public static ConcurrentHashMap<String, HandballGame> retHandball = new ConcurrentHashMap<>();
 
@@ -59,7 +59,7 @@ public class XBetHandball extends BookParser<HandballGame> {
     @Override
     public void parseLine(int i) {
         try {
-            if (i==1) driver.get(xStavka + line);
+            if (i==1) driver.get(xStavka + XBetHandballThread.line);
             webElement = (new WebDriverWait(driver, 7))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#games_content")));
             String html;
@@ -142,7 +142,7 @@ public class XBetHandball extends BookParser<HandballGame> {
             }
         } catch (NoSuchElementException | TimeoutException e) {
             e.printStackTrace();
-            driver.get(xStavka+ line);
+            driver.get(xStavka+ XBetHandballThread.line);
         }
     }
 
@@ -150,7 +150,7 @@ public class XBetHandball extends BookParser<HandballGame> {
     public void parseMainPage(int i) {
         try {
             if (i==1) {
-                driver.get(xStavka + live);
+                driver.get(xStavka + XBetHandballThread.live);
             }
             webElement = (new WebDriverWait(driver, 7))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#games_content")));
@@ -244,7 +244,7 @@ public class XBetHandball extends BookParser<HandballGame> {
             }
         } catch (NoSuchElementException | TimeoutException e) {
             e.printStackTrace();
-            driver.get(xStavka + live);
+            driver.get(xStavka + XBetHandballThread.live);
         }
     }
 
