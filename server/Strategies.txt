@@ -1,0 +1,15 @@
+Basketball:
+1) FoulStrategy //Dmitri
+2) Strategy20Min //Dmitri
+3) Strategy12 //Dmitri
+4) Strategy3 //Dmitri
+
+Football
+1) Str1 //Nickolai
+2) Str2 //Ivan
+
+Handball
+1) TotalStrategy //Nickolai
+
+Volleyball
+1) IvanStrategy //Ivan
