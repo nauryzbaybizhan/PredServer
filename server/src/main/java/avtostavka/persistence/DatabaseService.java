@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DatabaseService {
+public final class DatabaseService {
     private final BetRepository betRepository;
 
     @Autowired
