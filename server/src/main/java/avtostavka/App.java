@@ -11,6 +11,8 @@ import avtostavka.strategies.volleyball.VolleyBallStrategy;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -20,8 +22,11 @@ public class App {
 
     public static Config config;
     public static SevenBasketConfig sevenBasketConfig;
+    public static ApplicationContext context;
 
     public static void main(String[] args) throws IOException, InterruptedException {
+        context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+
         try (BufferedReader bf = new BufferedReader(new InputStreamReader(new FileInputStream("config.json"), StandardCharsets.UTF_8));
              BufferedReader bf2 = new BufferedReader(new InputStreamReader(new FileInputStream("whiteList.json"), StandardCharsets.UTF_8))) {
             Gson gson = new Gson();
